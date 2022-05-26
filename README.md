@@ -1,6 +1,6 @@
 # School-Management-System
 
-<div align="center"><img src="https://user-images.githubusercontent.com/36240511/170484568-b46f7524-22a4-4723-979a-5546fbbe9ed4.png" width="100"></div>
+<div align="center"><img src="https://user-images.githubusercontent.com/36240511/170484568-b46f7524-22a4-4723-979a-5546fbbe9ed4.png" width="150"></div>
 
 Tabela de conteúdos
 =================
