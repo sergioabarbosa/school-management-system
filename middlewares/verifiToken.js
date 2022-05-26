@@ -1,13 +1,21 @@
-// verifica o token
-function verifyToken(req, res, next){
-  const bearerHeader = req.headers['authorization'];
-  if(typeof bearerHeader !== 'undefined'){
-    const bearer = bearerHeader.split(' ');
-    const bearerToken = bearer[1];
-    req.token = bearerToken;
+require ('dotenv').config();
+const jwt = require('jsonwebtoken');
+const User = require('../models/User');
+const bcrypt = require('bcrypt');
+
+// Function check token
+function checkToken(req, res, next){
+  const authHeader = req.headers['authorization'];
+  const token = authHeader && authHeader.split(' ')[1];
+
+  if(token == null) return res.sendStatus(401).json({msg: 'Não autorizado'});
+
+  try{
+    const secret = process.env.TOKEN_SECRET;
+    jwt.verify(token, secret);
     next();
-  }else{
-    res.status(403).json({msg: 'Não autorizado'});
+  }catch(error){
+    return res.sendStatus(400).json({msg: 'Token Inválido'});
   }
 }
-module.export = verifyToken;
+module.exports = { checkToken };
