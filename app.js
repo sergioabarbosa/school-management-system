@@ -2,6 +2,7 @@ require ('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
 const { getUserById, userRegister, userLogin } = require('./controllers/user');
+const {getBlogPostById, createBlogPost, getBlogPosts, updateBlogPost, deleteBlogPost} = require('./controllers/blogpost');
 const { checkToken } = require('./middlewares/verifiToken');
 
 const app = express();
@@ -23,6 +24,9 @@ app.post('/auth/register', userRegister);
 
 // Login User
 app.post('/auth/login', userLogin);
+
+// getBlogPosts
+app.post('/blogposts/create', checkToken, createBlogPost);
 
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASS;
