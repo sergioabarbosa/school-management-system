@@ -18,4 +18,5 @@ function checkToken(req, res, next){
     return res.sendStatus(400).json({msg: 'Token Inválido'});
   }
 }
+
 module.exports = { checkToken };
