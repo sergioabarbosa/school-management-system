@@ -37,6 +37,9 @@ app.put('/blogposts/:id', updateBlogPost);
 // Delete posts
 app.delete('/blogposts/:id', deleteBlogPost);
 
+// Get POst By ID
+app.get('/blogposts/:id', getBlogPostById);
+
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASS;
 
