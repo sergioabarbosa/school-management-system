@@ -25,8 +25,17 @@ app.post('/auth/register', userRegister);
 // Login User
 app.post('/auth/login', userLogin);
 
-// getBlogPosts
-app.post('/blogposts/create', checkToken, createBlogPost);
+// Create posts
+app.post('/blogposts/create', createBlogPost);
+
+//Get posts
+app.get('/blogposts', getBlogPosts);
+
+// Update posts
+app.put('/blogposts/:id', updateBlogPost);
+
+// Delete posts
+app.delete('/blogposts/:id', deleteBlogPost);
 
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASS;
