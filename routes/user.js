@@ -11,6 +11,5 @@ app.get('/user/:id', checkToken, getUserById);
 // Register User
 app.post('/auth/register', userRegister);
 
-
 // Login User
 app.post('/auth/login', userLogin);

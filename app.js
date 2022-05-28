@@ -14,12 +14,12 @@ app.get('/', (req, res) => {
   res.status(200).json({msg: 'Bem-vindo ao nosso site'});
 });
 
-// Private Route
+// Private Routes
+// GetUserByID
 app.get('/user/:id', checkToken, getUserById);
 
 // Register User
 app.post('/auth/register', userRegister);
-
 
 // Login User
 app.post('/auth/login', userLogin);
