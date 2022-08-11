@@ -55,9 +55,9 @@ const userLogin = async (req, res) => {
   if (!password) {
     return res.status(422).json({msg: 'O campo senha é obrigatotio'});
   }
-  if (!email) {
-    return res.status(422).json({msg: 'O campo email é obrigatotio'});
-  }
+  // if (!email) {
+  //   return res.status(422).json({msg: 'O campo email é obrigatotio'});
+  // }
 
   // check user exist
   const user = await User.findOne({username});
@@ -73,8 +73,7 @@ const userLogin = async (req, res) => {
 
   try {
     const secret = process.env.TOKEN_SECRET;
-    const token = jwt.sign(
-      {
+    const token = jwt.sign({
         id: user._id,
       },
        secret, 
@@ -90,10 +89,24 @@ const userLogout = async (req, res) => {
   res.status(200).json({msg: 'Sessão finalizada'});
 }
 
+const updateUser = async (req, res) => {
+  const {id} = req.params;
+  const {username, email, password, confirmpassword} = req.body;
+  const user = await User.findById(id);
+  if(!user) return res.status(404).json({msg: 'Usuário não encontrado'});
+  if(username) user.username = username;
+  if(email) user.email = email;
+  if(password) user.password = password;
+  if(confirmpassword) user.confirmpassword = confirmpassword;
+  await user.save();
+  return res.status(200).json({msg: 'Usuário atualizado com sucesso'});
+}
+
 module.exports ={
   getUserById,
   userRegister,
   userLogin,
   getAllUsers,
-  userLogout
+  userLogout,
+  updateUser
 };
