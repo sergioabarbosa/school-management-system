@@ -1,7 +1,7 @@
 require ('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const validateJWT = require('./api/validateJWT');
+const {validateJWT} = require('./api/validateJWT');
 const {
   getUserById,
   userRegister,
@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 // Private Routes
 
 // Get All Users
-app.get('/auth/users', validateJWT, getAllUsers);
+app.get('/users', validateJWT, getAllUsers);
 
 // GetUserByID
 app.get('/user/:id', validateJWT, getUserById);
@@ -39,20 +39,19 @@ app.get('/user/:id', validateJWT, getUserById);
 app.post('/register', userRegister);
 
 // Login User
-app.post('/auth/login', userLogin);
+app.post('/login', userLogin);
 
 // User Logout
-app.post('/auth/logout', userLogout)
+app.post('/logout', userLogout)
 
 // Update User
 app.put('/user/:id', validateJWT, updateUser);
-
 
 // Create posts
 app.post('/blogposts/create', validateJWT, createBlogPost);
 
 //Get posts
-app.get('/auth/blogposts', validateJWT, getBlogPosts);
+app.get('/blogposts', validateJWT, getBlogPosts);
 
 // Update posts
 app.put('/blogposts/:id', validateJWT, updateBlogPost);
