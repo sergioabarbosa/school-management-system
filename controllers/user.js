@@ -12,16 +12,21 @@ const getUserById = async (req, res) => {
     return res.status(404).json({msg: 'Usuário não encontrado'});
   }
 
-  res.status(200).json(user);
+  return res.status(200).json(user);
+}
+
+const getAllUsers = async (req, res) => {
+  const users = await User.find();
+  res.status(200).json(users);
 }
 
 const userRegister = async (req, res) => {
   try{
-    const { name, email, password, confirmpassword } = req.body;
-    const user = await User.findOne({email});
+    const { username, email, password, confirmpassword } = req.body;
+    const user = await User.findOne({username});
     // Validations
     if(user) return res.status(400).json({msg: 'Usuário já existe'});
-    if (!name) return res.status(400).json({msg: 'O campo name é obrigatotio'});
+    if (!username) return res.status(400).json({msg: 'O campo name é obrigatotio'});
     if (!email) return res.status(400).json({msg: 'O campo email é obrigatotio'});
     if (!password) return res.status(400).json({msg: 'O campo password é obrigatotio'});
     if (!confirmpassword) return res.status(400).json({msg: 'O campo confirmpassword é obrigatotio'});
@@ -29,8 +34,7 @@ const userRegister = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
-      name,
-      email,
+      username,
       password: hashPassword
     });
     await newUser.save();
@@ -42,9 +46,9 @@ const userRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
   
-  const { email, password } = req.body;
+  const { username, password } = req.body;
 
-  if (!email) {
+  if (!username) {
     return res.status(422).json({msg: 'O campo email é obrigatotio'});
   }
   if (!password) {
@@ -52,7 +56,7 @@ const userLogin = async (req, res) => {
   }
 
   // check user exist
-  const user = await User.findOne({email});
+  const user = await User.findOne({username});
   if (!user) {
     return res.status(422).json({msg: 'Usuário não encontrado'});
   }
@@ -78,8 +82,14 @@ const userLogin = async (req, res) => {
   }
 }
 
+const userLogout = async (req, res) => {
+  res.status(200).json({msg: 'Sessão finalizada'});
+}
+
 module.exports ={
   getUserById,
   userRegister,
   userLogin,
+  getAllUsers,
+  userLogout
 };

@@ -1,14 +1,22 @@
 require ('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
-const { getUserById, userRegister, userLogin } = require('./controllers/user');
+const {
+  getUserById,
+  userRegister,
+  userLogin,
+  getAllUsers,
+  userLogout
+} = require('./controllers/user');
 const {getBlogPostById, createBlogPost, getBlogPosts, updateBlogPost, deleteBlogPost} = require('./controllers/blogpost');
 const { checkToken } = require('./middlewares/verifiToken');
+const cors = require('cors')
 
 const app = express();
 
 // parse application/json
 app.use(express.json());
+app.use(cors())
 
 // Public route
 app.get('/', (req, res) => {
@@ -16,20 +24,28 @@ app.get('/', (req, res) => {
 });
 
 // Private Routes
+
+// Get All Users
+app.get('/auth/users', getAllUsers);
+
 // GetUserByID
 app.get('/user/:id', checkToken, getUserById);
 
 // Register User
-app.post('/auth/register', userRegister);
+app.post('/register', userRegister);
 
 // Login User
 app.post('/auth/login', userLogin);
+
+// User Logout
+app.post('/auth/logout', userLogout)
+
 
 // Create posts
 app.post('/blogposts/create', createBlogPost);
 
 //Get posts
-app.get('/blogposts', getBlogPosts);
+app.get('/auth/blogposts', getBlogPosts);
 
 // Update posts
 app.put('/blogposts/:id', updateBlogPost);
@@ -37,8 +53,9 @@ app.put('/blogposts/:id', updateBlogPost);
 // Delete posts
 app.delete('/blogposts/:id', deleteBlogPost);
 
-// Get POst By ID
+// GetPostByID
 app.get('/blogposts/:id', getBlogPostById);
+
 
 const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASS;
