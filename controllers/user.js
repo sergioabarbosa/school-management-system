@@ -35,7 +35,8 @@ const userRegister = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
       username,
-      password: hashPassword
+      password: hashPassword,
+      email
     });
     await newUser.save();
     return res.status(201).json({msg: 'Usuário criado com sucesso'})
@@ -46,13 +47,16 @@ const userRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
   
-  const { username, password } = req.body;
+  const { username, password, email } = req.body;
 
   if (!username) {
     return res.status(422).json({msg: 'O campo email é obrigatotio'});
   }
   if (!password) {
     return res.status(422).json({msg: 'O campo senha é obrigatotio'});
+  }
+  if (!email) {
+    return res.status(422).json({msg: 'O campo email é obrigatotio'});
   }
 
   // check user exist
