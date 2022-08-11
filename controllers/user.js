@@ -12,16 +12,21 @@ const getUserById = async (req, res) => {
     return res.status(404).json({msg: 'Usuário não encontrado'});
   }
 
-  res.status(200).json(user);
+  return res.status(200).json(user);
+}
+
+const getAllUsers = async (req, res) => {
+  const users = await User.find();
+  res.status(200).json(users);
 }
 
 const userRegister = async (req, res) => {
   try{
-    const { name, email, password, confirmpassword } = req.body;
-    const user = await User.findOne({email});
+    const { username, email, password, confirmpassword } = req.body;
+    const user = await User.findOne({username});
     // Validations
     if(user) return res.status(400).json({msg: 'Usuário já existe'});
-    if (!name) return res.status(400).json({msg: 'O campo name é obrigatotio'});
+    if (!username) return res.status(400).json({msg: 'O campo name é obrigatotio'});
     if (!email) return res.status(400).json({msg: 'O campo email é obrigatotio'});
     if (!password) return res.status(400).json({msg: 'O campo password é obrigatotio'});
     if (!confirmpassword) return res.status(400).json({msg: 'O campo confirmpassword é obrigatotio'});
@@ -29,9 +34,9 @@ const userRegister = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
-      name,
-      email,
-      password: hashPassword
+      username,
+      password: hashPassword,
+      email
     });
     await newUser.save();
     return res.status(201).json({msg: 'Usuário criado com sucesso'})
@@ -42,17 +47,20 @@ const userRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
   
-  const { email, password } = req.body;
+  const { username, password, email } = req.body;
 
-  if (!email) {
+  if (!username) {
     return res.status(422).json({msg: 'O campo email é obrigatotio'});
   }
   if (!password) {
     return res.status(422).json({msg: 'O campo senha é obrigatotio'});
   }
+  // if (!email) {
+  //   return res.status(422).json({msg: 'O campo email é obrigatotio'});
+  // }
 
   // check user exist
-  const user = await User.findOne({email});
+  const user = await User.findOne({username});
   if (!user) {
     return res.status(422).json({msg: 'Usuário não encontrado'});
   }
@@ -65,8 +73,7 @@ const userLogin = async (req, res) => {
 
   try {
     const secret = process.env.TOKEN_SECRET;
-    const token = jwt.sign(
-      {
+    const token = jwt.sign({
         id: user._id,
       },
        secret, 
@@ -78,8 +85,28 @@ const userLogin = async (req, res) => {
   }
 }
 
+const userLogout = async (req, res) => {
+  res.status(200).json({msg: 'Sessão finalizada'});
+}
+
+const updateUser = async (req, res) => {
+  const {id} = req.params;
+  const {username, email, password, confirmpassword} = req.body;
+  const user = await User.findById(id);
+  if(!user) return res.status(404).json({msg: 'Usuário não encontrado'});
+  if(username) user.username = username;
+  if(email) user.email = email;
+  if(password) user.password = password;
+  if(confirmpassword) user.confirmpassword = confirmpassword;
+  await user.save();
+  return res.status(200).json({msg: 'Usuário atualizado com sucesso'});
+}
+
 module.exports ={
   getUserById,
   userRegister,
   userLogin,
+  getAllUsers,
+  userLogout,
+  updateUser
 };

@@ -1,9 +1,17 @@
 const router = require('express').Router();
 const User = require('../models/User');
-const { getUserById, userRegister, userLogin } = require('./controllers/user');
+const {
+  getUserById,
+  userRegister,
+  userLogin,
+  getAllUsers
+} = require('./controllers/user');
 const { checkToken } = require('./middlewares/verifiToken');
 
 const userController = require('../controllers/user');
+
+// Get All Users
+app.get('/', checkToken, getAllUsers);
 
 // Private Route
 app.get('/user/:id', checkToken, getUserById);
