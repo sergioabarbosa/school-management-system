@@ -5,6 +5,7 @@ const bcrypt = require('bcrypt');
 const User = new mongoose.model('User', {
   username: String,
   email: String,
+  usertype: String,
   password: String,
   confirmpassword: String
 });  

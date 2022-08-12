@@ -22,12 +22,13 @@ const getAllUsers = async (req, res) => {
 
 const userRegister = async (req, res) => {
   try{
-    const { username, email, password, confirmpassword } = req.body;
+    const { username, email, usertype ,password, confirmpassword } = req.body;
     const user = await User.findOne({username});
     // Validations
     if(user) return res.status(400).json({msg: 'Usuário já existe'});
     if (!username) return res.status(400).json({msg: 'O campo name é obrigatotio'});
     if (!email) return res.status(400).json({msg: 'O campo email é obrigatotio'});
+    if (!usertype) return res.status(400).json({msg: 'O campo usertype é obrigatotio'});
     if (!password) return res.status(400).json({msg: 'O campo password é obrigatotio'});
     if (!confirmpassword) return res.status(400).json({msg: 'O campo confirmpassword é obrigatotio'});
     // bcrypt password
@@ -35,6 +36,7 @@ const userRegister = async (req, res) => {
     const hashPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
       username,
+      usertype,
       password: hashPassword,
       email
     });
@@ -47,7 +49,7 @@ const userRegister = async (req, res) => {
 
 const userLogin = async (req, res) => {
   
-  const { username, password, email } = req.body;
+  const { username, password } = req.body;
 
   if (!username) {
     return res.status(422).json({msg: 'O campo email é obrigatotio'});
@@ -55,9 +57,6 @@ const userLogin = async (req, res) => {
   if (!password) {
     return res.status(422).json({msg: 'O campo senha é obrigatotio'});
   }
-  // if (!email) {
-  //   return res.status(422).json({msg: 'O campo email é obrigatotio'});
-  // }
 
   // check user exist
   const user = await User.findOne({username});
@@ -91,11 +90,12 @@ const userLogout = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const {id} = req.params;
-  const {username, email, password, confirmpassword} = req.body;
+  const {username, email, usertype, password, confirmpassword} = req.body;
   const user = await User.findById(id);
   if(!user) return res.status(404).json({msg: 'Usuário não encontrado'});
   if(username) user.username = username;
   if(email) user.email = email;
+  if(usertype) user.usertype = usertype;
   if(password) user.password = password;
   if(confirmpassword) user.confirmpassword = confirmpassword;
   await user.save();
