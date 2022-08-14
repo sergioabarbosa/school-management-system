@@ -30,7 +30,7 @@ app.get('/', (req, res) => {
 // Private Routes
 
 // Get All Users
-app.get('/users', validateJWT, getAllUsers);
+app.get('/users', getAllUsers);
 
 // GetUserByID
 app.get('/user/:id', validateJWT, getUserById);
@@ -48,10 +48,10 @@ app.post('/logout', userLogout)
 app.put('/user/:id', validateJWT, updateUser);
 
 // Create posts
-app.post('/blogposts/create', validateJWT, createBlogPost);
+app.post('/blogposts/create', createBlogPost);
 
 //Get posts
-app.get('/blogposts', validateJWT, getBlogPosts);
+app.get('/blogposts', getBlogPosts);
 
 // Update posts
 app.put('/blogposts/:id', validateJWT, updateBlogPost);

@@ -22,10 +22,11 @@ const getAllUsers = async (req, res) => {
 
 const userRegister = async (req, res) => {
   try{
-    const { username, email, usertype ,password, confirmpassword } = req.body;
+    const { username, name, email, usertype ,password, confirmpassword } = req.body;
     const user = await User.findOne({username});
     // Validations
-    if(user) return res.status(400).json({msg: 'Usuário já existe'});
+    if (user) return res.status(400).json({msg: 'Usuário já existe'});
+    if (!name) return res.status(400).json({msg: 'O campo name é obrigatório'});
     if (!username) return res.status(400).json({msg: 'O campo name é obrigatotio'});
     if (!email) return res.status(400).json({msg: 'O campo email é obrigatotio'});
     if (!usertype) return res.status(400).json({msg: 'O campo usertype é obrigatotio'});
@@ -35,8 +36,10 @@ const userRegister = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash(password, salt);
     const newUser = new User({
+      name,
       username,
       usertype,
+      email,
       password: hashPassword,
       email
     });
@@ -90,10 +93,11 @@ const userLogout = async (req, res) => {
 
 const updateUser = async (req, res) => {
   const {id} = req.params;
-  const {username, email, usertype, password, confirmpassword} = req.body;
+  const {username, name, email, usertype, password, confirmpassword} = req.body;
   const user = await User.findById(id);
   if(!user) return res.status(404).json({msg: 'Usuário não encontrado'});
   if(username) user.username = username;
+  if(name) user.name = name;
   if(email) user.email = email;
   if(usertype) user.usertype = usertype;
   if(password) user.password = password;
